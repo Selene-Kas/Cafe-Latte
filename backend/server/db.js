@@ -76,6 +76,24 @@ const createProduct = async({name, product_price, description, img, qty_availabl
     return response.rows[0];
 };
 
+const createCart = async({user_id, status})=> {
+  const SQL = `
+    INSERT INTO carts(id, user_id, status)
+    VALUES($1, $2, $3)
+    RETURNING * `;
+  const response = await client.query(SQL, [uuid.v4(), user_id, status]);
+  return response.rows[0];
+}
+
+const createCart_Product = async({cart_id, product_id, qty})=> {
+  const SQL = `
+    INSERT INTO cart_products(id, cart_id, product_id, qty)
+    VALUES($1, $2, $3, $4)
+    RETURNING * `;
+  const response = await client.query(SQL, [uuid.v4(), cart_id, product_id, qty]);
+  return response.rows[0];
+}
+
 
 async function fetchUsers() {
   const SQL = `
@@ -90,5 +108,7 @@ module.exports = {
   createUser,
   createProduct,
   createProduct_Type,
-  fetchUsers
+  fetchUsers,
+  createCart,
+  createCart_Product
 }; 
