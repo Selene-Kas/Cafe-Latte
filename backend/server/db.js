@@ -21,7 +21,7 @@ async function createTables() {
   CREATE TABLE carts(
     id UUID PRIMARY KEY,
     user_id UUID REFERENCES users(id) NOT NULL,
-    status VARCHAR(700)
+    date DATE 
   );
   
   CREATE TABLE product_types(
@@ -76,12 +76,12 @@ const createProduct = async({name, product_price, description, img, qty_availabl
     return response.rows[0];
 };
 
-const createCart = async({user_id, status})=> {
+const createCart = async({user_id, date})=> {
   const SQL = `
-    INSERT INTO carts(id, user_id, status)
+    INSERT INTO carts(id, user_id, date)
     VALUES($1, $2, $3)
     RETURNING * `;
-  const response = await client.query(SQL, [uuid.v4(), user_id, status]);
+  const response = await client.query(SQL, [uuid.v4(), user_id, date]);
   return response.rows[0];
 }
 
@@ -99,7 +99,24 @@ async function fetchUsers() {
   const SQL = `
     SELECT * FROM users;
   `;
-  return client.query(SQL);
+  const response = await client.query(SQL);
+  return response.rows;
+}
+
+async function fetchProducts() {
+  const SQL = `
+    SELECT * FROM products;
+  `;
+  const response = await client.query(SQL);
+  return response.rows;
+}
+
+async function fetchProduct_Types() {
+  const SQL = `
+  SELECT * FROM products_type;
+  `;
+  const response = await client.query(SQL);
+  return response.rows;
 }
 
 module.exports = {
@@ -108,7 +125,9 @@ module.exports = {
   createUser,
   createProduct,
   createProduct_Type,
-  fetchUsers,
   createCart,
-  createCart_Product
+  createCart_Product,
+  fetchUsers,
+  fetchProducts,
+  fetchProduct_Types
 }; 
