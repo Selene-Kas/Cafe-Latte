@@ -1,4 +1,4 @@
-import {  About, Home, Cart, Details, Login, Navbar, Register, Footer } from '../pages'
+import {  About, Home, Cart, Details, Login, Navbar, Register, Footer, Checkout } from '../pages'
 import './App.css'
 import { Routes, Route} from 'react-router-dom'
 
@@ -17,6 +17,7 @@ function App() {
           <Route path="details" element={<Details />}/>
           <Route path="cart" element={<Cart />}/>
           <Route path="about" element={<About />}/>
+          <Route path="checkout" element={<Checkout />} />
         </Routes>
      </main>
      <Footer />
@@ -25,4 +26,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
