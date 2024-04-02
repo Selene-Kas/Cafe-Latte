@@ -9,18 +9,19 @@ body {
 nav {
   background-color: rgb(71, 63, 54);
   display: flex;
-  justify-content: flex-end;
   max-width: 100%;
   margin: 0 auto;
   padding: 20px;
-  height: 70px;
-  flex-grow: 1;
+  height: 50px;
 }
 nav ul {
   display: flex;
   justify-content: space-between;
   list-style: none;
   width: 500px;
+  justify-content: flex-end;
+  flex-grow: 1;
+  gap: 30px;
 }
 li a {
   color: white;
@@ -28,9 +29,11 @@ li a {
   text-shadow: 1px 1px 2px black;
 }
 .maintitle {
+  display: flex;
   color: white;
   font-style: italic;
-  font-size: 2.5em;
+  font-size: 2.4em;
+  justify-content: flex-start;
 }
 footer {
   height: 70px;
