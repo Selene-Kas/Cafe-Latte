@@ -1,6 +1,8 @@
 const pg = require('pg');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+// const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/cafe_latte_db');
 
@@ -21,7 +23,7 @@ async function createTables() {
   CREATE TABLE carts(
     id UUID PRIMARY KEY,
     user_id UUID REFERENCES users(id) NOT NULL,
-    date DATE 
+    created_at TIMESTAMP DEFAULT now()
   );
   
   CREATE TABLE product_types(
@@ -43,7 +45,7 @@ async function createTables() {
     id UUID PRIMARY KEY,
     cart_id UUID REFERENCES carts(id) NOT NULL,
     product_id UUID REFERENCES products(id) NOT NULL,
-    cart_qty INTEGER NOT NULL
+    qty INTEGER NOT NULL
   );
   `;
   await client.query(SQL);
@@ -57,6 +59,12 @@ const createUser = async({username, password})=> {
     const response = await client.query(SQL,[uuid.v4(), username, await bcrypt.hash(password, 10)]);
     return response.rows[0];
 };
+
+// const createUserAndToken = async({ username, password })=> {
+//     const user = await createUser({ username, password });
+//     const token = await jwt.sign({ id: user.id }, JWT);
+//     return {token};
+//   }
 
 const createProduct_Type = async({name})=> {
   const SQL = `
@@ -76,16 +84,16 @@ const createProduct = async({name, product_price, description, img, qty_availabl
     return response.rows[0];
 };
 
-const createCart = async({user_id, date})=> {
+const createCart = async({user_id})=> {
   const SQL = `
-    INSERT INTO carts(id, user_id, date)
-    VALUES($1, $2, $3)
+    INSERT INTO carts(id, user_id)
+    VALUES($1, $2)
     RETURNING * `;
-  const response = await client.query(SQL, [uuid.v4(), user_id, date]);
+  const response = await client.query(SQL, [uuid.v4(), user_id]);
   return response.rows[0];
 }
 
-const createCart_Product = async({cart_id, product_id, qty})=> {
+const createCartProduct = async(cart_id, product_id, qty)=> {
   const SQL = `
     INSERT INTO cart_products(id, cart_id, product_id, qty)
     VALUES($1, $2, $3, $4)
@@ -94,8 +102,7 @@ const createCart_Product = async({cart_id, product_id, qty})=> {
   return response.rows[0];
 }
 
-
-async function fetchUsers() {
+async function fetchAllUsers() {
   const SQL = `
     SELECT * FROM users;
   `;
@@ -103,20 +110,110 @@ async function fetchUsers() {
   return response.rows;
 }
 
-async function fetchProducts() {
+async function fetchUser(id) {
+  const SQL = `
+    SELECT * FROM users
+    WHERE id = $1
+  `;
+  const response = await client.query(SQL, [id]); 
+  return response.rows;
+}
+
+// const authenticate = async({ username, password })=> {
+//     const SQL = `
+//       SELECT id, password
+//       FROM users 
+//       WHERE username=$1;
+//     `;
+//     const response = await client.query(SQL, [username]);
+//     if(!response.rows.length || (await bcrypt.compare(password, response.rows[0].password))=== false){
+//       const error = Error('not authorized');
+//       error.status = 401;
+//       throw error;
+//     }
+//     const token = await jwt.sign({id: response.rows[0].id}, JWT_SECRET);
+//     return { token };
+//   };
+
+//   const findUserWithToken = async(token)=> {
+//     let id;
+//     try {
+//       const payload = jwt.verify(token, JWT_SECRET);
+//       id = payload.id;
+//     } catch(ex) {
+//       const error = Error('not authorized');
+//       error.status = 401;
+//       throw error;
+//     }
+//     const SQL = `
+//       SELECT id, username 
+//       FROM users 
+//       WHERE id=$1;
+//     `;
+//     const response = await client.query(SQL, [id]);
+//     if(!response.rows.length){
+//       const error = Error('not authorized');
+//       error.status = 401;
+//       throw error;
+//     }
+//     return response.rows[0];
+//   };  
+
+async function fetchAllProducts() {
   const SQL = `
     SELECT * FROM products;
   `;
   const response = await client.query(SQL);
   return response.rows;
 }
+async function fetchProduct(id) {
+    const SQL = `
+      SELECT * FROM products
+      WHERE id = $1
+    `;
+    const response = await client.query(SQL, [id]); 
+    return response.rows;
+  }
+async function fetchProductsOfType(product_type) {
+    const SQL = `
+    SELECT * FROM products
+    WHERE product_type = $1
+  `;
+  const response = await client.query(SQL, [product_type]); 
+  return response.rows;
+}
 
 async function fetchProduct_Types() {
   const SQL = `
-  SELECT * FROM products_type;
+  SELECT * FROM product_types;
   `;
   const response = await client.query(SQL);
   return response.rows;
+}
+
+async function fetchCarts() {
+  const SQL = `
+    SELECT * FROM carts;
+  `;
+  const response = await client.query(SQL);
+  return response.rows;
+}
+
+const fetchCartProducts = async(cart_id) => {
+  const SQL = `
+    SELECT * FROM cart_products
+    WHERE cart_id = $1
+  `;
+  const response = await client.query(SQL, [cart_id]);
+  return response.rows;
+};
+
+const deleteCartProduct = async(id, cart_id)=> {
+  const SQL = `
+    DELETE FROM cart_products
+    WHERE id = $1 AND cart_id = $2
+  `;
+  await client.query(SQL, [id, cart_id]);
 }
 
 module.exports = {
@@ -126,8 +223,17 @@ module.exports = {
   createProduct,
   createProduct_Type,
   createCart,
-  createCart_Product,
-  fetchUsers,
-  fetchProducts,
-  fetchProduct_Types
+  createCartProduct,
+  fetchAllUsers,
+  fetchUser,
+  fetchAllProducts,
+  fetchProduct,
+  fetchProductsOfType,
+  fetchProduct_Types,
+  fetchCarts,
+  fetchCartProducts,
+  deleteCartProduct,
+//   createUserAndToken,
+//   findUserWithToken,
+//   authenticate
 }; 
