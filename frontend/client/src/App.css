@@ -88,3 +88,14 @@ h1 {
 .productName {
   color: rgb(55, 47, 40);
 }
+input {
+  width: 50%;
+  font-size: 1.2em;
+  padding: 12px 50px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.searchInput :only-child {
+  width: 50%;
+  font-size: 1.1em;
+}
