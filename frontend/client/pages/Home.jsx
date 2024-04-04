@@ -1,14 +1,19 @@
-
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import search from '../src/assets/search.png'
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [filterText, setFilterText] = useState("");
+  const filteredProducts = products.filter( product => 
+    product.name.toLowerCase().includes(filterText.toLowerCase()) 
+    );
   useEffect(() => {
     async function getAllProducts() {
       try {
       const response = await fetch('http://localhost:3000/api/products');
       const data = await response.json();
-      //console.log('data:',data);
+      console.log('data:',data);
       setProducts(data);
       } catch (error) {
         console.error('Uh oh, trouble fetching products', error);
@@ -16,17 +21,26 @@ const Home = () => {
     }
     getAllProducts();
   }, []);
+
+  const navigate = useNavigate(); 
+
   return(
     <div>
       <h1>COFFEE</h1>
+      <label className="searchInput">
+    <input 
+      type="text" placeholder="Search a Coffee?" value={filterText}
+      onChange={(e) => setFilterText(e.target.value.toLowerCase())}
+    /> <img id='search-img' src={search}/>
+    </label>
       <div className="productsList">
-      {products.map((product)=> {
+      {filteredProducts.map((product)=> {
         return(
           <div className="productCard" key={product.id}>
             <h3 className='productName'>{product.name}</h3>
             <img src={product.img} alt={product.name} />
             <p>Price: ${product.product_price}</p>
-            <button> Product Details </button>
+            <button onClick={() => navigate(`products/${product.id}`)}> Product Details </button>
           </div> 
         );
       })}
