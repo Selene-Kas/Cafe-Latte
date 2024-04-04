@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 //const jwt = require('jsonwebtoken');
 const { client,
     createTables,
@@ -22,8 +23,8 @@ const { client,
 } = require('./db');
 
 const app = express();
-
 app.use(express.json());
+app.use(cors());
 
 // get route all users
 app.get('/api/users', async(req,res,next)=> {
