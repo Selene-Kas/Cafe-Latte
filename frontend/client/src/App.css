@@ -80,6 +80,7 @@ main {
 }
 img {
   block-size: 200px;
+  border-radius: 8px;
 }
 h1 {
   color: rgb(78, 68, 62);
