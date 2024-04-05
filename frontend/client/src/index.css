@@ -13,9 +13,10 @@ body {
   margin-top: 0px;
 }
 #search-img {
-  display: flex;
-  width: 37px;
-  height: 37px;
-  margin-left: 270px;
-  margin-top: -45px;
+  width: 40px;
+  height: 40px;
+}
+#detailsLogo {
+  width: 40px;
+  height: 40px;
 }
