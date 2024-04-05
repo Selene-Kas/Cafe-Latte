@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchSingleProduct } from "./api";
+import cafe from '../src/assets/cafe.png' 
 
 const Details = () => {
   const { id }= useParams();
-  const [product, setProduct] = useState( );
+  const [product, setProduct] = useState({});
 
   useEffect(()=>{
     async function getProductDetails() {
@@ -17,15 +18,17 @@ const Details = () => {
   
   return(
     <div>
-    <h1>Details - {id} </h1> 
-    <p> Hello: {id.product}</p>
-    <ul className="productCard" > 
-      <li>Name: </li>
-      <li>Img: </li>
-      <li>Description: </li>
-      <li>Price: </li>
+    <h1> Details <img id="detailsLogo" src={cafe}/></h1> 
+    {product &&(
+    <ul className="singleProduct" > 
+      <li>{product.name}</li>
+      <li><img src={product.img} alt={product.name} /> </li>
+      <li>Description: {product.description}</li>
+      <li>Price: ${product.product_price}</li>
+      <li>Qty: {product.qty_available}</li>
       <button> Add to Cart </button>
     </ul>
+    )}
     </div>
   );
 }
