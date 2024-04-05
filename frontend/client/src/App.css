@@ -42,12 +42,12 @@ footer {
   background-color: rgb(164, 153, 141);
   display: flex;
   max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  height: 50px;
+  margin-bottom: 0px;
+  height: 70px;
 }
 footer ul {
   display: flex;
+  margin-bottom: 0px;
   justify-content: space-between;
   list-style: none;
   width: 500px;
@@ -63,7 +63,7 @@ main {
   flex-flow: row wrap;
   justify-content: center;
 }
-.productCard {
+.productCards {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -74,13 +74,26 @@ main {
   flex-basis: 20%;
   border: 1px;
   border-radius: 8px;
-  box-shadow: 0 0 3px black;
+  box-shadow: 0 0 0px black;
   transition: box-shadow 300ms;
   list-style: none;
 }
 img {
   block-size: 200px;
   border-radius: 8px;
+}
+.singleProduct {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding: 1em;
+  margin: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 5px black;
+  transition: box-shadow 300ms;
+  list-style: none;
 }
 h1 {
   color: rgb(78, 68, 62);
@@ -98,4 +111,7 @@ input {
 .searchInput :only-child {
   width: 50%;
   font-size: 1.1em;
+}
+.singleProduct li {
+  font-size: 20px;
 }
