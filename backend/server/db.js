@@ -60,6 +60,37 @@ const createUser = async({username, password})=> {
     return response.rows[0];
 };
 
+// register function
+async function register(username, password) {
+  const SQL = `
+  INSERT INTO users(username, password) 
+  VALUES($1, $2)
+  RETURNING * ;
+  `;
+  const hash = await bcrypt.hash(password,10);
+  const {rows} = await client.query(SQL, [username, hash]);
+  const user = rows[0];
+  return user;  
+}
+
+// login function 
+const login = async(username, password)=> {
+  const SQL = `
+      SELECT * FROM users
+      WHERE username = $1
+  `;
+  const {rows} = await client.query(SQL, [username]);
+  const user = rows[0];
+  if (!user) {
+    throw new Error('User not found');
+  } 
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error('Password incorrect');
+  }
+  return user;
+}
+
 // const createUserAndToken = async({ username, password })=> {
 //     const user = await createUser({ username, password });
 //     const token = await jwt.sign({ id: user.id }, JWT);
@@ -77,7 +108,7 @@ const createProduct_Type = async({name})=> {
 
 const createProduct = async({name, product_price, description, img, qty_available, product_type})=> {
   const SQL = `
-    INSERT INTO products(id, name, product_price, description, img, qty_available, product_type)
+    INSERT INTO products( id, name, product_price, description, img, qty_available, product_type)
     VALUES($1, $2, $3, $4, $5, $6, $7)
     RETURNING * `;
     const response = await client.query(SQL, [uuid.v4(), name, product_price, description, img, qty_available, product_type]);
@@ -110,6 +141,7 @@ async function fetchAllUsers() {
   return response.rows;
 }
 
+//same as login except with id instead of username 
 async function fetchUser(id) {
   const SQL = `
     SELECT * FROM users
@@ -173,7 +205,7 @@ async function fetchProduct(id) {
     `;
     const response = await client.query(SQL, [id]); 
     return response.rows;
-  }
+}
 async function fetchProductsOfType(product_type) {
     const SQL = `
     SELECT * FROM products
@@ -233,6 +265,8 @@ module.exports = {
   fetchCarts,
   fetchCartProducts,
   deleteCartProduct,
+  login,
+  register
 //   createUserAndToken,
 //   findUserWithToken,
 //   authenticate
