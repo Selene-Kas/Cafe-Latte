@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const userRouter = require('./routes/users');
+const productRouter = require('./routes/products');
 //const jwt = require('jsonwebtoken');
 const { client,
     createTables,
@@ -25,54 +27,9 @@ const { client,
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
 
-// get route all users
-app.get('/api/users', async(req,res,next)=> {
-  try {
-    res.send(await fetchAllUsers());
-  } catch(ex) {
-    next(ex);
-  }
-});
-//get one user (get details)
-app.get('/api/user/:id', async(req, res, next)=> {
-  try {
-    res.send(await fetchUser(req.params.id));
-  } catch(ex) {
-    next(ex);
-  }
-});
-// post add user to users (register)
-
-// post user login 
-
-// delete user
-
-// get route all products
-app.get('/api/products', async(req,res,next)=> {
-  try {
-    res.send(await fetchAllProducts());
-  } catch(ex) {
-    next(ex);
-  }
-});
-// get route for single product
-app.get('/api/product/:id', async(req, res, next)=> {
-  try {
-    res.send(await fetchProduct(req.params.id));
-  } catch(ex) {
-    next(ex);
-  }
-});
-// add product to products (NOT WORKING)
-app.post('/api/products', async(req, res, next)=> {
-  const { name, product_price, description, img, qty_available, product_type} = req.body;
-  try {
-    res.send(201).send(await createProduct(name, product_price, description, img, qty_available, product_type));
-  } catch(ex) {
-    next(ex);
-  }
-});
 //get route product_types 
 app.get('/api/product_types', async(req,res,next)=> {
   try {
@@ -81,37 +38,15 @@ app.get('/api/product_types', async(req,res,next)=> {
     next(ex);
   }
 });
+
 //get products of product type
-app.get('/api/products/products_type/:id', async(req, res, next)=> {
+app.get('/api/products_type/:id', async(req, res, next)=> {
   try {
     res.send(await fetchProductsOfType(req.params.id));
   } catch(ex) {
     next(ex);
   }
 });
-// patch add product to cart 
-
-// patch or put edit cart_product
-
-// delete cart_product
-
-//get route for carts
-app.get('/api/carts', async(req,res,next)=> {
-  try {
-    res.send(await fetchCarts(req.params.id));
-  } catch(ex) {
-    next(ex);
-  }
-});
-//get route for user's cart products
-app.get('/api/carts/:cartId/cart_products', async(req, res, next)=> {
-  try{
-    res.send(await fetchCartProducts(req.params.cartId));
-  } catch(err) {
-    next(err);
-  }
-});
-
 
 const init = async() => {
   await client.connect();
@@ -159,7 +94,7 @@ const init = async() => {
     img: 'https://www.acouplecooks.com/wp-content/uploads/2021/08/How-to-make-espresso-009.jpg',
     qty_available: 100, product_type: coffee.id}),
     createProduct({name: 'Colombian Whole Bean', product_price: 16.50,
-    description: 'Whole beans imported from Colombia.',
+    description: 'Whole beans imported from Colombia. 1 lb',
     img: 'https://sfbaycoffee.com/cdn/shop/articles/SFB_LFS_BeansVsGrounds_blog.jpg?v=1686342662',
     qty_available: 100, product_type: wholebean.id}),
     createProduct({name: 'Chemex', product_price: 40.00,
@@ -179,7 +114,7 @@ const init = async() => {
     createCart({ user_id: ron.id })
   ]);
 
-  //console.log(await fetchAllUsers());
+  console.log(await fetchAllUsers());
   console.log(await fetchAllProducts());
   //console.log(await fetchCarts());
 
