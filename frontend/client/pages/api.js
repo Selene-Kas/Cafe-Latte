@@ -7,7 +7,7 @@ export const fetchSingleProduct = async (productId) => {
           'Content-Type': 'application/json',
         },
       });
-    const result = await response.json();
+    const [result] = await response.json();
     console.log(result);
     return result;
   } catch (err) {
