@@ -27,16 +27,16 @@ const Home = () => {
   return(
     <div>
       <h1>COFFEE</h1>
-      <label className="searchInput">
+      <label className="searchInput"> <img id='search-img' src={search}/>
     <input 
       type="text" placeholder="Search a Coffee?" value={filterText}
       onChange={(e) => setFilterText(e.target.value.toLowerCase())}
-    /> <img id='search-img' src={search}/>
+    /> 
     </label>
       <div className="productsList">
       {filteredProducts.map((product)=> {
         return(
-          <div className="productCard" key={product.id}>
+          <div className="productCards" key={product.id}>
             <h3 className='productName'>{product.name}</h3>
             <img src={product.img} alt={product.name} />
             <p>Price: ${product.product_price}</p>
