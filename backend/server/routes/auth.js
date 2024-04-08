@@ -8,9 +8,9 @@ const { createUser,
 
 //Register (need to save new user to database?)
 router.post("/register", async(req,res, next)=> {
-    const {username, password} = req.body;
+    const {firstName, lastName, username, password} = req.body;
     try {
-      const user = await createUser({username, password});
+      const user = await createUser({firstName, lastName, username, password});
       delete user.password;
       const token = jwt.sign(user, "secret");
       res.send({user, token});    
