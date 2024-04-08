@@ -16,6 +16,8 @@ async function createTables() {
       
   CREATE TABLE users(
     id UUID PRIMARY KEY,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL
   );
@@ -52,12 +54,12 @@ async function createTables() {
 }
 
 //register to create new user
-const createUser = async({username, password})=> {
+const createUser = async({ firstName, lastName, username, password})=> {
   const SQL = `
-    INSERT INTO users(id, username, password) 
-    VALUES($1, $2, $3)
+    INSERT INTO users(id, firstName, lastName, username, password) 
+    VALUES($1, $2, $3, $4, $5)
     RETURNING * `;
-    const {rows} = await client.query(SQL,[uuid.v4(), username, await bcrypt.hash(password, 10)]);
+    const {rows} = await client.query(SQL,[uuid.v4(), firstName, lastName, username, await bcrypt.hash(password, 10)]);
     const user = rows[0];
     return user;
 };
@@ -101,7 +103,7 @@ const createCartProduct = async(cart_id, product_id, qty)=> {
 
 async function fetchAllUsers() {
   const SQL = `
-    SELECT id, username FROM users;
+    SELECT id, firstName, lastName, username FROM users;
   `;
   const response = await client.query(SQL);
   return response.rows;
@@ -137,7 +139,7 @@ const authenticate = async(username, password)=> {
 const findUserByToken = async(token) => {
   const decoded = jwt.verify(token, JWT_SECRET);
   const SQL = `
-    SELECT id, username
+    SELECT id, firstName, lastName, username
     FROM users
     WHERE id = $1
   `;
@@ -234,6 +236,6 @@ module.exports = {
   fetchCart,
   fetchCartProducts,
   deleteCartProduct,
-   findUserByToken,
-   authenticate
+  findUserByToken,
+  authenticate
 }; 
