@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const userRouter = require('./routes/users');
 const productRouter = require('./routes/products');
-//const jwt = require('jsonwebtoken');
+const cartRouter = require('./routes/cart');
+const productTypesRouter = require('./routes/productTypes');
+const authRouter = require('./routes/auth');
+
 const { client,
     createTables,
     createUser,
@@ -11,17 +14,9 @@ const { client,
     createCart,
     fetchAllUsers,
     fetchAllProducts,
-    fetchProduct_Types,
-    fetchProduct,
-    fetchProductsOfType,
-    fetchCarts,
     fetchCartProducts,
     createCartProduct,
-    deleteCartProduct,
-    fetchUser
-    // createUserAndToken,
-    // findUserWithToken,
-    // authenticate
+    deleteCartProduct
 } = require('./db');
 
 const app = express();
@@ -29,24 +24,10 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
+app.use('/api/carts', cartRouter);
+app.use('/api/product_types', productTypesRouter);
+app.use('/api/auth', authRouter);
 
-//get route product_types 
-app.get('/api/product_types', async(req,res,next)=> {
-  try {
-    res.send(await fetchProduct_Types());
-  } catch(ex) {
-    next(ex);
-  }
-});
-
-//get products of product type
-app.get('/api/products_type/:id', async(req, res, next)=> {
-  try {
-    res.send(await fetchProductsOfType(req.params.id));
-  } catch(ex) {
-    next(ex);
-  }
-});
 
 const init = async() => {
   await client.connect();
@@ -118,17 +99,17 @@ const init = async() => {
   console.log(await fetchAllProducts());
   //console.log(await fetchCarts());
 
-  // Cart Products
+  //Cart Products
   const cartProducts = await Promise.all([
     createCartProduct(one.id, ColdBrew.id, 1),
     createCartProduct(two.id, ColdBrew.id, 1),
     createCartProduct(two.id, Latte.id, 1),
     createCartProduct(three.id, Latte.id, 1)
   ]);
-  // console.log(await fetchCartProducts(one.id));
-  // console.log(await fetchCartProducts(two.id));
-  // await deleteCartProduct(cartProducts[0].id);
-  //console.log(await fetchCartProducts());
+  console.log(await fetchCartProducts(one.id));
+  console.log(await fetchCartProducts(two.id));
+  await deleteCartProduct(cartProducts[0].id);
+  console.log(await fetchCartProducts());
   
   app.listen(3000, () => {
     console.log('server is listening on port 3000!');
