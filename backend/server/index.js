@@ -43,9 +43,9 @@ const init = async() => {
 
   // Users
   const [harry, hermoine, ron] = await Promise.all([
-    createUser({ username: 'harry', password: 'hogwarts1'}),
-    createUser({ username: 'hermoine', password: 'hogwarts2'}),
-    createUser({ username: 'ron', password: 'hogwarts3'})
+    createUser({ firstName: 'harry', lastName: 'potter', username: 'harry@gmail.com', password: 'hogwarts1'}),
+    createUser({ firstName: 'hermoine', lastName: 'granger',username: 'hermoine@gmail.com', password: 'hogwarts2'}),
+    createUser({ firstName: 'ron', lastName: 'weasly',username: 'ron@gmail.com', password: 'hogwarts3'})
   ]);
 
   // Products
