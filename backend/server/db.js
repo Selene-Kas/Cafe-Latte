@@ -1,8 +1,8 @@
 const pg = require('pg');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
-// const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/cafe_latte_db');
 
@@ -51,51 +51,17 @@ async function createTables() {
   await client.query(SQL);
 }
 
+//register to create new user
 const createUser = async({username, password})=> {
   const SQL = `
     INSERT INTO users(id, username, password) 
     VALUES($1, $2, $3)
     RETURNING * `;
-    const response = await client.query(SQL,[uuid.v4(), username, await bcrypt.hash(password, 10)]);
-    return response.rows[0];
+    const {rows} = await client.query(SQL,[uuid.v4(), username, await bcrypt.hash(password, 10)]);
+    const user = rows[0];
+    return user;
 };
 
-// register function
-async function register(username, password) {
-  const SQL = `
-  INSERT INTO users(username, password) 
-  VALUES($1, $2)
-  RETURNING * ;
-  `;
-  const hash = await bcrypt.hash(password,10);
-  const {rows} = await client.query(SQL, [username, hash]);
-  const user = rows[0];
-  return user;  
-}
-
-// login function 
-const login = async(username, password)=> {
-  const SQL = `
-      SELECT * FROM users
-      WHERE username = $1
-  `;
-  const {rows} = await client.query(SQL, [username]);
-  const user = rows[0];
-  if (!user) {
-    throw new Error('User not found');
-  } 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) {
-    throw new Error('Password incorrect');
-  }
-  return user;
-}
-
-// const createUserAndToken = async({ username, password })=> {
-//     const user = await createUser({ username, password });
-//     const token = await jwt.sign({ id: user.id }, JWT);
-//     return {token};
-//   }
 
 const createProduct_Type = async({name})=> {
   const SQL = `
@@ -135,7 +101,7 @@ const createCartProduct = async(cart_id, product_id, qty)=> {
 
 async function fetchAllUsers() {
   const SQL = `
-    SELECT * FROM users;
+    SELECT id, username FROM users;
   `;
   const response = await client.query(SQL);
   return response.rows;
@@ -151,45 +117,38 @@ async function fetchUser(id) {
   return response.rows;
 }
 
-// const authenticate = async({ username, password })=> {
-//     const SQL = `
-//       SELECT id, password
-//       FROM users 
-//       WHERE username=$1;
-//     `;
-//     const response = await client.query(SQL, [username]);
-//     if(!response.rows.length || (await bcrypt.compare(password, response.rows[0].password))=== false){
-//       const error = Error('not authorized');
-//       error.status = 401;
-//       throw error;
-//     }
-//     const token = await jwt.sign({id: response.rows[0].id}, JWT_SECRET);
-//     return { token };
-//   };
+const authenticate = async(username, password)=> {
+  const SQL = `
+    SELECT * FROM users
+    WHERE username = $1
+  `;
+  const { rows } = await client.query(SQL, [username]);
+  const user = rows[0];
+  if (!user) {
+    throw new Error('User not found');
+  }
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error('Password incorrect');
+  }
+  return user;
+};
 
-//   const findUserWithToken = async(token)=> {
-//     let id;
-//     try {
-//       const payload = jwt.verify(token, JWT_SECRET);
-//       id = payload.id;
-//     } catch(ex) {
-//       const error = Error('not authorized');
-//       error.status = 401;
-//       throw error;
-//     }
-//     const SQL = `
-//       SELECT id, username 
-//       FROM users 
-//       WHERE id=$1;
-//     `;
-//     const response = await client.query(SQL, [id]);
-//     if(!response.rows.length){
-//       const error = Error('not authorized');
-//       error.status = 401;
-//       throw error;
-//     }
-//     return response.rows[0];
-//   };  
+const findUserByToken = async(token) => {
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const SQL = `
+    SELECT id, username
+    FROM users
+    WHERE id = $1
+  `;
+  const response = await client.query(SQL, [decoded.id]);
+  if(!response.rows.length){
+    const error = Error('not authorized');
+    error.status = 401;
+    throw error;
+  }
+  return response.rows[0];
+}  
 
 async function fetchAllProducts() {
   const SQL = `
@@ -223,13 +182,22 @@ async function fetchProduct_Types() {
   return response.rows;
 }
 
-async function fetchCarts() {
+async function fetchAllCarts() {
   const SQL = `
     SELECT * FROM carts;
   `;
   const response = await client.query(SQL);
   return response.rows;
 }
+ 
+async function fetchCart(id) {
+    const SQL = `
+      SELECT * FROM carts
+      WHERE id = $1
+    `;
+    const response = await client.query(SQL, [id]); 
+    return response.rows;
+  }
 
 const fetchCartProducts = async(cart_id) => {
   const SQL = `
@@ -262,12 +230,10 @@ module.exports = {
   fetchProduct,
   fetchProductsOfType,
   fetchProduct_Types,
-  fetchCarts,
+  fetchAllCarts,
+  fetchCart,
   fetchCartProducts,
   deleteCartProduct,
-  login,
-  register
-//   createUserAndToken,
-//   findUserWithToken,
-//   authenticate
+   findUserByToken,
+   authenticate
 }; 
