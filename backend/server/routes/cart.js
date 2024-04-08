@@ -1,23 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const {  
-    fetchCarts,
-    fetchCartProducts
+    fetchAllCarts,
+    fetchCart,
+    fetchCartProducts,
+    createCartProduct,
+    deleteCartProduct
 } = require('../db');
 
-//get route for carts
-router.get('/api/carts', async(req,res,next)=> {
+// get route for all carts
+router.get('/', async(req,res,next)=> {
   try {
-    res.send(await fetchCarts(req.params.id));
+    res.send(await fetchAllCarts());
   } catch(ex) {
     next(ex);
   }
 });
+//get route for single cart ('/api/carts')
+router.get('/:cartId', async (req,res, next)=> {
+  try{
+    res.send(await fetchCart(req.params.cartId));
+  } catch(ex) {
+    next(ex);
+  }
+})
 
 //get route for user's cart products
-router.get('/api/carts/:cartId/cart_products', async(req, res, next)=> {
+router.get('/:cartId/cart_products', async(req, res, next)=> {
   try{
     res.send(await fetchCartProducts(req.params.cartId));
+  } catch(err) {
+    next(err);
+  }
+});
+
+// POST route for creating a cartProduct. Adding a product to cart
+router.post('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
+  try {
+    res.status(201).send(await createCartProduct(req.params.userId, req.params.cartProductId));
   } catch(err) {
     next(err);
   }
@@ -28,6 +48,14 @@ router.get('/api/carts/:cartId/cart_products', async(req, res, next)=> {
 // patch or put edit cart_product
 
 // delete cart_product
+router.delete('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
+  try{
+    await deleteCartProduct(req.params.cartId, req.params.cartProductId);
+    res.status(204);
+  } catch(err) {
+    next(err);
+  }
+})
 
   
 
