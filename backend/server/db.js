@@ -119,6 +119,14 @@ async function fetchUser(id) {
   return response.rows;
 }
 
+async function deleteUser(id) {
+    const SQL = `
+      DELETE FROM users
+      WHERE id = $1
+    `;
+    await client.query(SQL, [id]); 
+}
+
 const authenticate = async(username, password)=> {
   const SQL = `
     SELECT * FROM users
@@ -167,6 +175,14 @@ async function fetchProduct(id) {
     const response = await client.query(SQL, [id]); 
     return response.rows;
 }
+async function deleteProduct(id) {
+    const SQL = `
+      DELETE FROM products
+      WHERE id = $1
+    `;
+    await client.query(SQL, [id]); 
+}
+
 async function fetchProductsOfType(product_type) {
     const SQL = `
     SELECT * FROM products
@@ -228,8 +244,10 @@ module.exports = {
   createCartProduct,
   fetchAllUsers,
   fetchUser,
+  deleteUser,
   fetchAllProducts,
   fetchProduct,
+  deleteProduct,
   fetchProductsOfType,
   fetchProduct_Types,
   fetchAllCarts,
