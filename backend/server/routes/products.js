@@ -2,9 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { fetchAllProducts, 
     fetchProduct, 
-    createProduct, 
-    fetchProduct_Types,
-    fetchProductsOfType
+    createProduct,
+    deleteProduct 
 } = require('../db');
 
 // get route for all products
@@ -25,7 +24,7 @@ router.get('/:id', async(req, res, next)=> {
   }
 });
 
-// add product to products (NOT WORKING)
+// add product to products
 router.post('/', async(req, res, next)=> {
   const { name, product_price, description, img, qty_available, product_type} = req.body;
   try {
@@ -35,4 +34,13 @@ router.post('/', async(req, res, next)=> {
   }
 });
 
+// remove product from products
+router.delete('/:id', async(req,res,next)=> {
+  try{
+    await deleteProduct(req.params.id);
+    res.sendStatus(204);
+  } catch(err) {
+    next(err);
+  }
+});
 module.exports = router;
