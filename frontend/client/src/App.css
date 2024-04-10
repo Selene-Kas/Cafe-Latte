@@ -126,3 +126,7 @@ button {
   font-size: 15px solid;
   color: black
 }
+.logout {
+  display: flex;
+  width: 150px;
+}
