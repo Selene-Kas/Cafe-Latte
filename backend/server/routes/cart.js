@@ -4,6 +4,7 @@ const {
     fetchAllCarts,
     fetchCart,
     fetchCartProducts,
+    fetchUserCart,
     createCartProduct,
     deleteCartProduct
 } = require('../db');
@@ -24,8 +25,16 @@ router.get('/:cartId', async (req,res, next)=> {
     next(ex);
   }
 })
+//get cart by userId 
+router.get('/user/:userId', async(req,res, next)=> {
+  try{
+    res.send(await fetchUserCart(req.params.userId));
+  } catch(err) {
+    next(err);
+  }
+});
 
-//get route for user's cart products
+//get route for cart products
 router.get('/:cartId/cart_products', async(req, res, next)=> {
   try{
     res.send(await fetchCartProducts(req.params.cartId));
@@ -37,7 +46,7 @@ router.get('/:cartId/cart_products', async(req, res, next)=> {
 // POST route for creating a cartProduct. Adding a product to cart
 router.post('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
   try {
-    res.status(201).send(await createCartProduct(req.params.userId, req.params.cartProductId));
+    res.status(201).send(await createCartProduct(req.params.cartId, req.params.cartProductId, req.body.qty));
   } catch(err) {
     next(err);
   }
