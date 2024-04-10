@@ -1,5 +1,5 @@
 
-  // fetch for a single product
+// fetch for a single product
 export const fetchSingleProduct = async (productId) => {
   try {
     const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
@@ -14,3 +14,20 @@ export const fetchSingleProduct = async (productId) => {
     console.error(`Oh no, trouble fetching product #${productId}!`, err);
   }
 };
+
+export const fetchUserCart= async(userId)=> {
+  const response = await fetch(`http://localhost:3000/api/carts/user/${userId}`);
+  const data =await response.json();
+  console.log(data);
+  return(data);
+}
+export const fetchMe= async(token)=> {
+  const response = await fetch('http://localhost:3000/api/auth/me', {
+    headers: {
+      Authorization: token
+    }
+  });
+  const data = await response.json();
+  console.log(data);
+  return(data);
+}
