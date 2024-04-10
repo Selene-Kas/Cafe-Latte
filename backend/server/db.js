@@ -47,7 +47,8 @@ async function createTables() {
     id UUID PRIMARY KEY,
     cart_id UUID REFERENCES carts(id) NOT NULL,
     product_id UUID REFERENCES products(id) NOT NULL,
-    qty INTEGER NOT NULL
+    qty INTEGER NOT NULL,
+    CONSTRAINT unique_cart_id_product_id UNIQUE (cart_id, product_id)
   );
   `;
   await client.query(SQL);
@@ -209,22 +210,43 @@ async function fetchAllCarts() {
 }
  
 async function fetchCart(id) {
-    const SQL = `
-      SELECT * FROM carts
-      WHERE id = $1
-    `;
-    const response = await client.query(SQL, [id]); 
-    return response.rows;
-  }
+  const SQL = `
+    SELECT * FROM carts
+    WHERE id = $1
+  `;
+  const response = await client.query(SQL, [id]); 
+  return response.rows;
+}
+
+async function fetchUserCart(user_id) {
+  const SQL = `
+    SELECT * FROM carts
+    WHERE user_id = $1
+  `;
+  const response = await client.query(SQL, [user_id]); 
+  return response.rows;
+} 
 
 const fetchCartProducts = async(cart_id) => {
   const SQL = `
-    SELECT * FROM cart_products
-    WHERE cart_id = $1
+  SELECT cart_products.cart_id, cart_products.qty, products.name, products.product_price, 
+    products.description, products.img
+  FROM cart_products
+  INNER JOIN products ON cart_products.product_id=products.id
+  WHERE cart_id = $1;
   `;
   const response = await client.query(SQL, [cart_id]);
   return response.rows;
 };
+
+// const fetchUserCartProducts = async(user_id) => {
+//   const SQL = `
+//     SELECT * FROM cart_prodcuts
+//     WHERE user_id = $1
+//   `;
+//   const response = await client.query(SQL, [user_id]);
+//   return response.rows;
+// }
 
 const deleteCartProduct = async(id, cart_id)=> {
   const SQL = `
@@ -252,6 +274,7 @@ module.exports = {
   fetchProduct_Types,
   fetchAllCarts,
   fetchCart,
+  fetchUserCart,
   fetchCartProducts,
   deleteCartProduct,
   findUserByToken,
