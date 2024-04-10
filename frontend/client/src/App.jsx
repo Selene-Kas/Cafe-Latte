@@ -16,10 +16,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login token={token} setToken={setToken}/>}/>
           <Route path="register" element={<Register token={token} setToken={setToken} />}/>
-          <Route path="products/:id" element={<Details />}/>
-          <Route path="cart" element={<Cart setToken={setToken}/>}/>
+          <Route path="products/:id" element={<Details token={token}/>}/>
+          <Route path="cart" element={<Cart token={token} />}/>
           <Route path="about" element={<About />}/>
-          <Route path="checkout" element={<Checkout />} />
+          <Route path="checkout" element={<Checkout token={token}/>} /> 
         </Routes>
      </main>
      <Footer />
