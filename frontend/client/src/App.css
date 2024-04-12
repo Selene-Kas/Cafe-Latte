@@ -121,10 +121,11 @@ button {
   padding: 5px;
   border: none;
   border-radius: 5px;
-  width: 105px;
+  width: 108px;
   background-color: solid rgb(170, 170, 170);
   font-size: 15px solid;
-  color: black
+  color: black;
+  font-weight: bold;
 }
 .logout {
   display: flex;
