@@ -47,8 +47,7 @@ async function createTables() {
     id UUID PRIMARY KEY,
     cart_id UUID REFERENCES carts(id) NOT NULL,
     product_id UUID REFERENCES products(id) NOT NULL,
-    qty INTEGER NOT NULL,
-    CONSTRAINT unique_cart_id_product_id UNIQUE (cart_id, product_id)
+    qty INTEGER NOT NULL
   );
   `;
   await client.query(SQL);
@@ -101,6 +100,13 @@ const createCartProduct = async(cart_id, product_id, qty)=> {
   const response = await client.query(SQL, [uuid.v4(), cart_id, product_id, qty]);
   return response.rows[0];
 }
+
+// const updateCartProduct = async(cart_id, product_id, qty)=> {
+//   const SQL = `
+//   UPDATE FROM cart_products
+//   WHERE cart_id = $1 AND product_id = $2 `;
+//   const response = await client.query(SQL, [cart_id, product_id]) 
+// }
 
 async function fetchAllUsers() {
   const SQL = `
@@ -229,7 +235,7 @@ async function fetchUserCart(user_id) {
 
 const fetchCartProducts = async(cart_id) => {
   const SQL = `
-  SELECT cart_products.cart_id, cart_products.qty, products.name, products.product_price, 
+  SELECT cart_products.cart_id, cart_products.qty, cart_products.product_id, products.name, products.product_price, 
     products.description, products.img
   FROM cart_products
   INNER JOIN products ON cart_products.product_id=products.id
