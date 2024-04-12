@@ -52,9 +52,15 @@ router.post('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
   }
 });
 
-// patch add product to cart 
 
-// patch or put edit cart_product
+// patch or put edit cart_products in cart 
+router.patch('', async(req, res, next)=> {
+  try {
+
+  } catch(err) {
+    next(err);
+  }
+})
 
 // delete cart_product
 router.delete('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
