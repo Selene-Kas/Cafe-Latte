@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchSingleProduct } from "./api";
 import cafe from '../src/assets/cafe.png';
 import { fetchUserCart, fetchMe } from "./api";
@@ -7,6 +7,7 @@ import { fetchUserCart, fetchMe } from "./api";
 const Details = ({token}) => {
   const { id }= useParams();
   const [product, setProduct] = useState({});
+  const navigate = useNavigate();
 
   useEffect(()=>{
     async function getProductDetails() {
@@ -41,6 +42,7 @@ const Details = ({token}) => {
     }).then(response => response.json())
       .then(result => {
         alert('You successfully added product to your cart: '+ product.name);
+        console.log(result);
       })
       .catch(console.error);
   }
@@ -56,6 +58,7 @@ const Details = ({token}) => {
       <li>Price: ${product.product_price}</li>
       <li>Qty: {product.qty_available}</li>
       <button onClick={handleClick}> Add to Cart </button>
+      <button onClick={()=> navigate('/')}>Back to Shop</button>
     </ul>
     )}
     </div>
