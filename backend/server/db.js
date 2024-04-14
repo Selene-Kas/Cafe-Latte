@@ -254,12 +254,12 @@ const fetchCartProducts = async(cart_id) => {
 //   return response.rows;
 // }
 
-const deleteCartProduct = async(id, cart_id)=> {
+const deleteCartProduct = async(cart_id, product_id)=> {
   const SQL = `
     DELETE FROM cart_products
-    WHERE id = $1 AND cart_id = $2
+    WHERE cart_id = $1 AND product_id = $2 
   `;
-  await client.query(SQL, [id, cart_id]);
+  await client.query(SQL, [cart_id, product_id]);
 }
 
 module.exports = {
