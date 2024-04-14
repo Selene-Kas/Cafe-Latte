@@ -44,9 +44,9 @@ router.get('/:cartId/cart_products', async(req, res, next)=> {
 });
 
 // POST route for creating a cartProduct. Adding a product to cart
-router.post('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
+router.post('/:cartId/cart_products/:productId', async(req, res, next)=> {
   try {
-    res.status(201).send(await createCartProduct(req.params.cartId, req.params.cartProductId, req.body.qty));
+    res.status(201).send(await createCartProduct(req.params.cartId, req.params.productId, req.body.qty));
   } catch(err) {
     next(err);
   }
@@ -54,23 +54,23 @@ router.post('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
 
 
 // patch or put edit cart_products in cart 
-router.patch('', async(req, res, next)=> {
-  try {
-
-  } catch(err) {
-    next(err);
-  }
-})
+// router.patch('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
+//   try {
+//     res.send(201).send( )
+//   } catch(err) {
+//     next(err);
+//   }
+// })
 
 // delete cart_product
-router.delete('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
+router.delete('/:cartId/cart_products/:productId', async(req, res, next)=> {
   try{
-    await deleteCartProduct(req.params.cartId, req.params.cartProductId);
-    res.status(204);
+    await deleteCartProduct(req.params.cartId, req.params.productId);
+    res.sendStatus(204);
   } catch(err) {
     next(err);
   }
-})
+});
 
   
 
