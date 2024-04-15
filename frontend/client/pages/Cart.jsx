@@ -7,7 +7,7 @@ const Cart = ({token}) => {
   const [me, setMe] = useState(null);
   const [cart, setCart] = useState('');
   const [cartProducts, setCartProducts] = useState([]);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState();
   const navigate = useNavigate();
   const { id }= useParams();
 
@@ -59,6 +59,7 @@ const Cart = ({token}) => {
   const logout = ()=> {
     window.localStorage.removeItem('token');
     setMe({});
+    location.reload();
   }
 
   const handlePrice = () => {
@@ -67,6 +68,21 @@ const Cart = ({token}) => {
       ans += product.qty * product.product_price
     ))
     setPrice(ans);
+    console.log(ans);
+  }
+
+  const handleChange = (product, d) => {
+    let amount = -1;
+    cartProducts.forEach((data, index)=> {
+      if (data.id === product.id)
+        amount = index;
+      console.log(product)
+    });
+    const tempArr = cartProducts;
+    tempArr[amount].qty += d;
+    if(tempArr[amount].qty === 0)
+      tempArr[amount].qty = 1;
+    setCartProducts([...tempArr])
   }
 
   useEffect(()=> {
@@ -80,11 +96,12 @@ const Cart = ({token}) => {
       headers: {
         'Content-Type': 'appliction/json'
       },
-    }).then(response => response.json())
+    })//.then(response => response.json())
     .then(result => {
       alert('You successfully removed item from cart: ' + product.name );
+      location.reload();
       console.log(result);
-      return(result.deletedCartProducts);
+      return(result);
     })
     .catch(console.error);
   } catch(err) {
@@ -98,36 +115,41 @@ const Cart = ({token}) => {
       {me &&
       <div>
       <h2 >Welcome {me.firstname}!</h2>
-      <button className="logout" onClick={()=>{ logout(); navigate('/') }}>Logout: { me.firstname }</button> 
+      <button className="logout" onClick={()=>{ logout(); navigate('/login') }}>Logout: { me.firstname }</button> 
       </div>
       }
       {/* {cart && 
       <div><p>Cart Id: {cart.id} </p></div>
       } */}
       <div className="productsList">
-      {cartProducts.map((product)=> {
+      {cartProducts.length > 0 ? (
+      cartProducts.map((product)=> {
         // const cartProduct = cartProducts.find(cartProduct => cartProduct.product_id === product.id);
         return (
-          <ul className="productCards" key={product.name}>
-            <li>ID: {product.product_id}</li>
-            <li className='productName'><h3>{product.name}</h3></li>
-            <li>
-              <button>+</button> 
-              <button>Qty: {product.qty}</button>
-              <button>-</button>
-            </li>
-            <li><img src={product.img} alt={product.name} /></li>
-            <li>
+          <div className="productCards" key={product.product_id}>
+            {/* <li>ID: {product.product_id}</li> */}
+            <h3 className='productName'>{product.name}</h3>
+            <p>{product.product_id}</p>
+            <div className="qtybuttons" >
+              <button className="add" onClick={()=>handleChange(product, +1)}>+</button>
+              <button className="itemQty">{product.qty}</button>
+              <button className="subtract" onClick={()=>handleChange(product, -1)}>-</button>
+            </div>
+            <img src={product.img} alt={product.name} />
+            <div>
             <span> ${product.product_price}</span>
               <button onClick={()=>handleRemove(product)}>Remove</button>
-            </li>
-          </ul> 
+            </div>
+          </div> 
         )
-      })}
+      })
+    ): (
+    <h3>No items in your CART! </h3>
+    )}
     </div>
     <div className="total">
-      <span>Total Price of your Cart</span>
-      <span> Rs -</span>
+      <h3>SubTotal of your Cart $ {price}</h3>
+      <button className="checkout">Checkout</button>
     </div>
     </main>
   );
