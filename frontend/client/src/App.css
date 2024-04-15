@@ -131,3 +131,23 @@ button {
   display: flex;
   width: 150px;
 }
+.qtybuttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  list-style: none;
+  flex-grow: 1;
+  gap: 10px;
+}
+.add {
+  width: 30px;
+  height: 30px;
+}
+.subtract {
+  width: 30px;
+  height: 30px;
+}
+.itemQty {
+  width: 30px;
+  height: 30px;
+}
