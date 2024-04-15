@@ -10,13 +10,13 @@ function App() {
   return (
     <>
     <div>
-      <Navbar token={token}/>
+      <Navbar token={token} />
      <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login token={token} setToken={setToken}/>}/>
           <Route path="register" element={<Register token={token} setToken={setToken} />}/>
-          <Route path="products/:id" element={<Details token={token}/>}/>
+          <Route path="products/:id" element={<Details token={token} />}/>
           <Route path="cart" element={<Cart token={token} />}/>
           <Route path="about" element={<About />}/>
           <Route path="checkout" element={<Checkout token={token}/>} /> 
