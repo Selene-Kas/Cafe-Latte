@@ -59,7 +59,7 @@ const Cart = ({token}) => {
   const logout = ()=> {
     window.localStorage.removeItem('token');
     setMe({});
-    location.reload();
+    location.reload(navigate('/login'));
   }
 
   const handlePrice = () => {
@@ -115,7 +115,7 @@ const Cart = ({token}) => {
       {me &&
       <div>
       <h2 >Welcome {me.firstname}!</h2>
-      <button className="logout" onClick={()=>{ logout(); navigate('/login') }}>Logout: { me.firstname }</button> 
+      <button className="logout" onClick={()=>{ logout() }}>Logout: { me.firstname }</button> 
       </div>
       }
       {/* {cart && 
