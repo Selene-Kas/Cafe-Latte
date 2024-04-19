@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
+   const [cart, setCart] = useState('');
 
   return (
     <>
@@ -17,7 +18,7 @@ function App() {
           <Route path="login" element={<Login token={token} setToken={setToken}/>}/>
           <Route path="register" element={<Register token={token} setToken={setToken} />}/>
           <Route path="products/:id" element={<Details token={token}/>}/>
-          <Route path="cart" element={<Cart token={token} />}/>
+          <Route path="cart" element={<Cart token={token} cart={cart} setCart={setCart} />}/>
           <Route path="about" element={<About />}/>
           <Route path="checkout" element={<Checkout token={token}/>} /> 
         </Routes>
