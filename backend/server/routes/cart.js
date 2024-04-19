@@ -3,6 +3,7 @@ const router = express.Router();
 const {  
     fetchAllCarts,
     fetchCart,
+    createCart,
     fetchCartProducts,
     fetchUserCart,
     createCartProduct,
@@ -52,6 +53,14 @@ router.post('/:cartId/cart_products/:productId', async(req, res, next)=> {
   }
 });
 
+//post route to create new cart
+router.delete('/newUser/:userId' async(req, res, next)=> {
+  try {
+    res.status(201).send(await createCart(req.params.userId));
+  } catch(err) {
+    next(err);
+  }
+});
 
 // patch or put edit cart_products in cart 
 // router.patch('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
