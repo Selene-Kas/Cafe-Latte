@@ -54,9 +54,10 @@ router.post('/:cartId/cart_products/:productId', async(req, res, next)=> {
 });
 
 //post route to create new cart
-router.delete('/newUser/:userId' async(req, res, next)=> {
+router.post('/newUser/:userId', async(req, res, next)=> {
   try {
-    res.status(201).send(await createCart(req.params.userId));
+    const cart = await createCart(req.params.userId);
+    res.status(201).send(cart);
   } catch(err) {
     next(err);
   }
