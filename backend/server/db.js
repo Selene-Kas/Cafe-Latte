@@ -223,7 +223,7 @@ async function fetchUserCart(user_id) {
   return response.rows;
 } 
 
-const createCart = async({user_id})=> {
+const createCart = async(user_id)=> {
   const SQL = `
     INSERT INTO carts(id, user_id)
     VALUES($1, $2)
