@@ -90,9 +90,9 @@ const init = async() => {
 
   // Carts
   const [ one, two, three ] = await Promise.all([
-    createCart({ user_id: harry.id }),
-    createCart({ user_id: hermoine.id }),
-    createCart({ user_id: ron.id })
+    createCart( harry.id ),
+    createCart( hermoine.id ),
+    createCart( ron.id )
   ]);
 
   console.log(await fetchAllUsers());
