@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 //import { fetchCart } from "./api";
 //import { setProducts } from "./Home";
 
-const Cart = ({token}) => {
+const Cart = ({token, cart, setCart}) => {
   const [me, setMe] = useState(null);
-  const [cart, setCart] = useState('');
+  //const [cart, setCart] = useState('');
   const [cartProducts, setCartProducts] = useState([]);
   const [price, setPrice] = useState();
   const navigate = useNavigate();
