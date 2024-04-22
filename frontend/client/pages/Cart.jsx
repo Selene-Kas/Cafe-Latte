@@ -1,12 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-//import { fetchCart } from "./api";
-//import { setProducts } from "./Home";
 
-const Cart = ({token, cart, setCart}) => {
+const Cart = ({token, setCartProducts, cartProducts}) => {
   const [me, setMe] = useState(null);
-  //const [cart, setCart] = useState('');
-  const [cartProducts, setCartProducts] = useState([]);
+  const [cart, setCart] = useState('');
+  //const [cartProducts, setCartProducts] = useState([]);
   const [price, setPrice] = useState();
   const navigate = useNavigate();
   const { id }= useParams();
@@ -71,6 +69,10 @@ const Cart = ({token, cart, setCart}) => {
     console.log(ans);
   }
 
+  useEffect(()=> {
+    handlePrice();
+  })
+
   const handleChange = (product, d) => {
     let amount = -1;
     cartProducts.forEach((data, index)=> {
@@ -84,10 +86,6 @@ const Cart = ({token, cart, setCart}) => {
       tempArr[amount].qty = 1;
     setCartProducts([...tempArr])
   }
-
-  useEffect(()=> {
-    handlePrice();
-  })
 
   const handleRemove = (product)=> {
     try {
@@ -129,7 +127,7 @@ const Cart = ({token, cart, setCart}) => {
           <div className="productCards" key={product.product_id}>
             {/* <li>ID: {product.product_id}</li> */}
             <h3 className='productName'>{product.name}</h3>
-            <p>{product.product_id}</p>
+            {/* <p>{product.product_id}</p> */}
             <div className="qtybuttons" >
               <button className="add" onClick={()=>handleChange(product, +1)}>+</button>
               <button className="itemQty">{product.qty}</button>
