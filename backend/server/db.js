@@ -89,14 +89,16 @@ const createCartProduct = async(cart_id, product_id, qty)=> {
     RETURNING * `;
   const response = await client.query(SQL, [uuid.v4(), cart_id, product_id, qty]);
   return response.rows[0];
-}
+};
 
-// const updateCartProduct = async(cart_id, product_id, qty)=> {
-//   const SQL = `
-//   UPDATE FROM cart_products
-//   WHERE cart_id = $1 AND product_id = $2 `;
-//   const response = await client.query(SQL, [cart_id, product_id]) 
-// }
+const updateCartProduct = async(cart_id, product_id, qty)=> {
+  const SQL = `
+  UPDATE cart_products
+  SET qty = $3
+  WHERE cart_id = $1 AND product_id = $2 `;
+  const response = await client.query(SQL, [cart_id, product_id, qty]);
+  return response.rows[0]; //returns the updated row 
+};
 
 async function fetchAllUsers() {
   const SQL = `
@@ -104,7 +106,7 @@ async function fetchAllUsers() {
   `;
   const response = await client.query(SQL);
   return response.rows;
-}
+};
 
 //same as login except with id instead of username 
 async function fetchUser(id) {
@@ -114,7 +116,7 @@ async function fetchUser(id) {
   `;
   const response = await client.query(SQL, [id]); 
   return response.rows;
-}
+};
 
 async function deleteUser(id) {
     const SQL = `
@@ -122,7 +124,7 @@ async function deleteUser(id) {
       WHERE id = $1
     `;
     await client.query(SQL, [id]); 
-}
+};
 
 const authenticate = async(username, password)=> {
   const SQL = `
@@ -155,7 +157,7 @@ const findUserByToken = async(token) => {
     throw error;
   }
   return response.rows[0];
-}  
+};  
 
 async function fetchAllProducts() {
   const SQL = `
@@ -163,7 +165,8 @@ async function fetchAllProducts() {
   `;
   const response = await client.query(SQL);
   return response.rows;
-}
+};
+
 async function fetchProduct(id) {
     const SQL = `
       SELECT * FROM products
@@ -171,14 +174,15 @@ async function fetchProduct(id) {
     `;
     const response = await client.query(SQL, [id]); 
     return response.rows;
-}
+};
+
 async function deleteProduct(id) {
     const SQL = `
       DELETE FROM products
       WHERE id = $1
     `;
     await client.query(SQL, [id]); 
-}
+};
 
 async function fetchProductsOfType(product_type) {
     const SQL = `
@@ -187,7 +191,7 @@ async function fetchProductsOfType(product_type) {
   `;
   const response = await client.query(SQL, [product_type]); 
   return response.rows;
-}
+};
 
 async function fetchProduct_Types() {
   const SQL = `
@@ -195,7 +199,7 @@ async function fetchProduct_Types() {
   `;
   const response = await client.query(SQL);
   return response.rows;
-}
+};
 
 async function fetchAllCarts() {
   const SQL = `
@@ -203,7 +207,7 @@ async function fetchAllCarts() {
   `;
   const response = await client.query(SQL);
   return response.rows;
-}
+};
  
 async function fetchCart(id) {
   const SQL = `
@@ -212,7 +216,7 @@ async function fetchCart(id) {
   `;
   const response = await client.query(SQL, [id]); 
   return response.rows;
-}
+};
 
 async function fetchUserCart(user_id) {
   const SQL = `
@@ -221,7 +225,7 @@ async function fetchUserCart(user_id) {
   `;
   const response = await client.query(SQL, [user_id]); 
   return response.rows;
-} 
+};
 
 const createCart = async(user_id)=> {
   const SQL = `
@@ -230,7 +234,7 @@ const createCart = async(user_id)=> {
     RETURNING * `;
   const response = await client.query(SQL, [uuid.v4(), user_id]);
   return response.rows[0];
-}
+};
 
 const fetchCartProducts = async(cart_id) => {
   const SQL = `
@@ -244,22 +248,13 @@ const fetchCartProducts = async(cart_id) => {
   return response.rows;
 };
 
-// const fetchUserCartProducts = async(user_id) => {
-//   const SQL = `
-//     SELECT * FROM cart_prodcuts
-//     WHERE user_id = $1
-//   `;
-//   const response = await client.query(SQL, [user_id]);
-//   return response.rows;
-// }
-
 const deleteCartProduct = async(cart_id, product_id)=> {
   const SQL = `
     DELETE FROM cart_products
     WHERE cart_id = $1 AND product_id = $2 
   `;
   await client.query(SQL, [cart_id, product_id]);
-}
+};
 
 module.exports = {
   client,
@@ -269,6 +264,7 @@ module.exports = {
   createProduct_Type,
   createCart,
   createCartProduct,
+  updateCartProduct,
   fetchAllUsers,
   fetchUser,
   deleteUser,
