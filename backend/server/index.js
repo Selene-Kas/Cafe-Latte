@@ -50,11 +50,11 @@ const init = async() => {
 
   // Products
   const [ColdBrew, Latte] = await Promise.all([
-    createProduct({name: 'Cold Brew', product_price: 4.00, 
+    createProduct({name: 'Cold Brew', product_price: 4.25, 
     description: 'Black coffee on ice.', 
     img: 'https://www.seriouseats.com/thmb/U-LNa28nrdRi_nRUjcJAjDgtd5g=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/IcedCoffee-9e66377b914346d9b166bf45d2065619.jpg',
      qty_available: 100, product_type: coffee.id}),
-    createProduct({name: 'Latte', product_price: 5.00, 
+    createProduct({name: 'Latte', product_price: 5.75, 
     description: 'Coffee on ice with milk.', 
     img: 'https://www.caffesociety.co.uk/assets/recipe-images/latte-small.jpg',
      qty_available: 100, product_type: coffee.id}),
