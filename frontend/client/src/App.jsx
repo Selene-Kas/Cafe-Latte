@@ -6,7 +6,8 @@ import { useState } from 'react';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
-   const [cart, setCart] = useState('');
+  //const [cart, setCart] = useState('');
+  const [cartProducts, setCartProducts] = useState([]);
 
   return (
     <>
@@ -16,9 +17,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login token={token} setToken={setToken}/>}/>
-          <Route path="register" element={<Register token={token} setToken={setToken} cart={cart} setCart={setCart} />}/>
-          <Route path="products/:id" element={<Details token={token}/>}/>
-          <Route path="cart" element={<Cart token={token} cart={cart} setCart={setCart} />}/>
+          <Route path="register" element={<Register token={token} setToken={setToken} />}/>
+          <Route path="products/:id" element={<Details token={token} cartProducts={cartProducts} setCartProducts={setCartProducts}/>}/>
+          <Route path="cart" element={<Cart token={token} cartProducts={cartProducts} setCartProducts={setCartProducts} />}/>
           <Route path="about" element={<About />}/>
           <Route path="checkout" element={<Checkout token={token}/>} /> 
         </Routes>
