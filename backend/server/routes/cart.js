@@ -7,6 +7,7 @@ const {
     fetchCartProducts,
     fetchUserCart,
     createCartProduct,
+    updateCartProduct,
     deleteCartProduct
 } = require('../db');
 
@@ -63,14 +64,16 @@ router.post('/newUser/:userId', async(req, res, next)=> {
   }
 });
 
-// patch or put edit cart_products in cart 
-// router.patch('/:cartId/cart_products/:cartProductId', async(req, res, next)=> {
-//   try {
-//     res.send(201).send( )
-//   } catch(err) {
-//     next(err);
-//   }
-// })
+// put edit cart_products in cart 
+router.put('/:cartId/cart_products/:productId', async(req, res, next)=> {
+  try {
+    const updateQty = await updateCartProduct(req.params.cartId, req.params.productId, req.body.qty);
+    res.status(201).send(updateQty);
+  } catch(err) {
+    next(err);
+  }
+});
+
 
 // delete cart_product
 router.delete('/:cartId/cart_products/:productId', async(req, res, next)=> {
